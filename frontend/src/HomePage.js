@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./HomePage.css";
+import { executeCode } from "./api/pathfindingService";
 
 const HomePage = () => {
   const [code, setCode] = useState({
@@ -68,24 +69,7 @@ int main() {
   const runCode = async () => {
     setLoading(true);
     try {
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:3001';
-      const response = await fetch(
-        `${apiUrl}/api/${selectedLanguage}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ code: code[selectedLanguage] }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const result = await response.json();
-      console.log(result);
+      const result = await executeCode(selectedLanguage, code[selectedLanguage]);
 
       if (result.status === "success") {
         setOutput(result.stdout);
@@ -93,8 +77,8 @@ int main() {
         setOutput(result.stderr || result.message);
       }
     } catch (error) {
-      console.error("Error:", error);
-      setOutput("Error executing code. Please check console for details.");
+      console.error("Error executing code:", error);
+      setOutput(`Error: ${error.message}`);
     } finally {
       setLoading(false);
     }
