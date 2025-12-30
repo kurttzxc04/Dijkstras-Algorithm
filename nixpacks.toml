@@ -1,5 +1,1 @@
-[phases.build]
-cmds = ["npm install --prefix backend"]
-
-[phases.start]
-cmds = ["bash start.sh"]
+# Railway will use Procfile automatically
