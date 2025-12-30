@@ -165,6 +165,7 @@ export default class PathfindingVisualizer extends Component {
   };
 
   animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
+    const {startNodeRow, startNodeCol, finishNodeRow, finishNodeCol} = this.state;
     for (let i = 0; i <= visitedNodesInOrder.length; i++) {
       if (i === visitedNodesInOrder.length) {
         setTimeout(() => {
@@ -174,6 +175,11 @@ export default class PathfindingVisualizer extends Component {
       }
       setTimeout(() => {
         const node = visitedNodesInOrder[i];
+        // Skip styling start and end nodes - they must remain immutable
+        if ((node.row === startNodeRow && node.col === startNodeCol) ||
+            (node.row === finishNodeRow && node.col === finishNodeCol)) {
+          return;
+        }
         document.getElementById(`node-${node.row}-${node.col}`).className =
           'node node-visited';
       }, 10 * i);
@@ -181,9 +187,23 @@ export default class PathfindingVisualizer extends Component {
   }
 
   animateShortestPath(nodesInShortestPathOrder) {
+    const {startNodeRow, startNodeCol, finishNodeRow, finishNodeCol} = this.state;
     for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
       setTimeout(() => {
         const node = nodesInShortestPathOrder[i];
+        // Skip styling start and end nodes - they must remain immutable
+        if ((node.row === startNodeRow && node.col === startNodeCol) ||
+            (node.row === finishNodeRow && node.col === finishNodeCol)) {
+          // On last iteration, update metrics regardless
+          if (i === nodesInShortestPathOrder.length - 1) {
+            this.setState({
+              executionTime: this.metrics.executionTime,
+              totalOperations: this.metrics.totalOperations,
+              shortestPathLength: this.metrics.shortestPathLength,
+            });
+          }
+          return;
+        }
         document.getElementById(`node-${node.row}-${node.col}`).className =
           'node node-shortest-path';
         
@@ -200,6 +220,13 @@ export default class PathfindingVisualizer extends Component {
   }
 
   visualizeDijkstra() {
+    // Reset metrics before running
+    this.setState({
+      executionTime: 0,
+      totalOperations: 0,
+      shortestPathLength: 0,
+    });
+    
     const startTime = performance.now();
     const {grid, startNodeRow, startNodeCol, finishNodeRow, finishNodeCol} = this.state;
     // Use current dragged positions, not hardcoded defaults
