@@ -1,0 +1,12 @@
+{
+  "name": "dijkstra-algorithm",
+  "version": "1.0.0",
+  "description": "Dijkstra's Algorithm Visualizer",
+  "main": "start.sh",
+  "scripts": {
+    "start": "bash start.sh"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
