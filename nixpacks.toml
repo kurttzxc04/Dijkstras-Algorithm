@@ -1,1 +1,2 @@
-# Railway will use Procfile automatically
+[phases.build]
+cmds = ["npm install --prefix backend"]
