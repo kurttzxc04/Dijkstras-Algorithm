@@ -1,4 +1,2 @@
 #!/bin/bash
-cd backend
-npm install
-npm start
+node backend/server.js
