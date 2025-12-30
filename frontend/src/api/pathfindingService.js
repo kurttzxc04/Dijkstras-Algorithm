@@ -89,9 +89,11 @@ export async function executeCode(language, code) {
   }
 }
 
-export default {
+const pathfindingService = {
   executeCppCode,
   executeJavaCode,
   executeJavaScriptCode,
   executeCode,
 };
+
+export default pathfindingService;

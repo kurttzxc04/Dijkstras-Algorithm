@@ -91,7 +91,9 @@ export async function get(endpoint) {
   });
 }
 
-export default {
+const apiClient = {
   post,
   get,
 };
+
+export default apiClient;
