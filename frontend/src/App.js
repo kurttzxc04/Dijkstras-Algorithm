@@ -1,18 +1,30 @@
 import React from "react";
-import { Route, Link, Routes } from "react-router-dom";
+import { Route, Link, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import PathfindingVisualizerPage from "./PathfindingVisualizerPage";
 import HomePage from "./HomePage";
 
 function App() {
+  const location = useLocation();
+  
   return (
     <div className="App">
       <header className="header">
         <h1>Dijkstra's Algorithm</h1>
         <p>An Amazing Algorithm</p>
         <nav>
-          <Link to="/">Home</Link>
-          <Link to="/visualizer">Visualizer</Link>
+          <Link 
+            to="/" 
+            className={location.pathname === "/" ? "nav-link active" : "nav-link"}
+          >
+            Home
+          </Link>
+          <Link 
+            to="/visualizer" 
+            className={location.pathname === "/visualizer" ? "nav-link active" : "nav-link"}
+          >
+            Visualizer
+          </Link>
         </nav>
       </header>
       <Routes>

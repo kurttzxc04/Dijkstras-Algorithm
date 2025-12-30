@@ -23,6 +23,9 @@ export default class PathfindingVisualizer extends Component {
       selectedNodeType: null,
       selectedNodeRow: null,
       selectedNodeCol: null,
+      executionTime: 0,
+      totalOperations: 0,
+      shortestPathLength: 0,
     };
   }
 
@@ -124,6 +127,9 @@ export default class PathfindingVisualizer extends Component {
       finishNodeRow: FINISH_NODE_ROW,
       finishNodeCol: FINISH_NODE_COL,
       mouseIsPressed: false,
+      executionTime: 0,
+      totalOperations: 0,
+      shortestPathLength: 0,
     }, () => {
       // After state update, restore node classes
       setTimeout(() => {
@@ -180,22 +186,45 @@ export default class PathfindingVisualizer extends Component {
         const node = nodesInShortestPathOrder[i];
         document.getElementById(`node-${node.row}-${node.col}`).className =
           'node node-shortest-path';
+        
+        // Update metrics state after the last node is animated
+        if (i === nodesInShortestPathOrder.length - 1) {
+          this.setState({
+            executionTime: this.metrics.executionTime,
+            totalOperations: this.metrics.totalOperations,
+            shortestPathLength: this.metrics.shortestPathLength,
+          });
+        }
       }, 50 * i);
     }
   }
 
   visualizeDijkstra() {
+    const startTime = performance.now();
     const {grid, startNodeRow, startNodeCol, finishNodeRow, finishNodeCol} = this.state;
     // Use current dragged positions, not hardcoded defaults
     const startNode = grid[startNodeRow][startNodeCol];
     const finishNode = grid[finishNodeRow][finishNodeCol];
     const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
+    
+    // Calculate metrics
+    const executionTime = performance.now() - startTime;
+    const totalOperations = visitedNodesInOrder.length;
+    const shortestPathLength = nodesInShortestPathOrder.length;
+    
+    // Store metrics and animate
+    this.metrics = {
+      executionTime: Math.round(executionTime * 100) / 100,
+      totalOperations,
+      shortestPathLength,
+    };
+    
     this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
   }
 
   render() {
-    const {grid, mouseIsPressed} = this.state;
+    const {grid, mouseIsPressed, executionTime, totalOperations, shortestPathLength} = this.state;
 
     return (
       <>
@@ -207,17 +236,25 @@ export default class PathfindingVisualizer extends Component {
             Visualize Dijkstra's Algorithm
           </button>
           <button 
-            className="btn btn-secondary"
-            onClick={this.clearBarriers}
-          >
-            Clear Barriers
-          </button>
-          <button 
             className="btn btn-danger"
             onClick={this.resetVisualizer}
           >
             Reset
           </button>
+        </div>
+        <div className="metrics-panel">
+          <div className="metric-card">
+            <div className="metric-label">Time</div>
+            <div className="metric-value">{executionTime} ms</div>
+          </div>
+          <div className="metric-card">
+            <div className="metric-label">Operations</div>
+            <div className="metric-value">{totalOperations}</div>
+          </div>
+          <div className="metric-card">
+            <div className="metric-label">Shortest Path Length</div>
+            <div className="metric-value">{shortestPathLength}</div>
+          </div>
         </div>
         <div className="grid">
           {grid.map((row, rowIdx) => {

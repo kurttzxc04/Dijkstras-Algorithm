@@ -68,10 +68,25 @@ nav a {
   transition: all 0.3s ease;
 }
 
+nav a.nav-link {
+  color: var(--text-primary);
+}
+
+nav a.nav-link.active {
+  background-color: var(--accent-color);
+  color: white;
+  border-color: var(--accent-color);
+}
+
 nav a:hover {
   background-color: var(--bg-secondary);
   border-color: var(--accent-color);
   color: var(--accent-color);
+}
+
+nav a.nav-link.active:hover {
+  background-color: var(--accent-hover);
+  color: white;
 }
 
 /* PathfindingVisualizer styles */
