@@ -66,6 +66,35 @@ int main() {
     setCode({ ...code, [selectedLanguage]: e.target.value });
   };
 
+  // Prevent editing but allow selection and copying
+  const handleKeyDown = (e) => {
+    // Allow: Ctrl+C (copy), Ctrl+A (select all)
+    const isCopy = (e.ctrlKey || e.metaKey) && e.key === 'c';
+    const isSelectAll = (e.ctrlKey || e.metaKey) && e.key === 'a';
+    
+    if (isCopy || isSelectAll) {
+      return; // Allow these actions
+    }
+    
+    // Prevent all other keyboard input
+    e.preventDefault();
+  };
+
+  // Prevent paste
+  const handlePaste = (e) => {
+    e.preventDefault();
+  };
+
+  // Prevent drag-drop
+  const handleDrop = (e) => {
+    e.preventDefault();
+  };
+
+  // Prevent cut
+  const handleCut = (e) => {
+    e.preventDefault();
+  };
+
   const runCode = async () => {
     setLoading(true);
     try {
@@ -108,6 +137,11 @@ int main() {
           className="code-input"
           value={code[selectedLanguage]}
           onChange={handleCodeChange}
+          onKeyDown={handleKeyDown}
+          onPaste={handlePaste}
+          onDrop={handleDrop}
+          onCut={handleCut}
+          readOnly
           placeholder="Enter your code here..."
         />
         <div className="language-select">
